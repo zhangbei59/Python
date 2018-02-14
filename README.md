@@ -35,7 +35,7 @@
 - Please confirm your network can open pixiv first!!!
 - Please confirm your network can open pixiv first!!!
 
-##### Need Python3.6 and above to run normally
+##### Require Python3.6 and above to run normally
 
 This is a single-threaded spider,so the speed not fast,personal use should be ok.
 Please don't crawling frequent in short time,it will ban your ip temporary.
