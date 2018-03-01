@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
-# @Last Modified by:   Alex
-# @Last Modified time: 2018-02-13 23:03:58
+# @Last Modified by:   Anthorty
+# @Last Modified time: 2018-03-01 15:31:20
 # Version: 0.0.1
 
 import requests
@@ -20,7 +20,7 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 start_headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
                  'Referer': ''}
-prepare_url = set()
+
 front_url = "https://www.pixiv.net/"
 multi_front_url = "https://www.pixiv.net"
 detail_url = "https://www.pixiv.net/member_illust.php?mode=medium&illust_id="
@@ -36,9 +36,11 @@ setRef = referInfo[int(setList)]
 
 listDate = f"&date={setDate}"
 begin_url = f"https://www.pixiv.net/ranking.php?mode={setRankList}&ref=rn-h-{setRef}-3" + listDate
-origin_url = {}
-next_pages_url = []
+
+prepare_url = set()
 multipic_url = set()
+next_pages_url = []
+origin_url = {}
 really_multipic_url = {}
 
 class pixiv_spider():
@@ -171,38 +173,44 @@ class pixiv_spider():
         except Exception as e:
             print("Download Error!", e)
 
+    def main(self):
+        count = 0
+        multi_count = 0
+        spider = pixiv_spider()
+        if spider.check_login():
+            print("已登录")
+        else:
+            username = input("请输入帐号")
+            password = input("请输入密码")
+            spider.login_in(username, password)
+
+        spider.start_spider(begin_url, int(setMaxPage) + 1)
+
+        for next_page in next_pages_url:
+            spider.parse_json(next_page)
+
+        for url in prepare_url:
+            spider.on_spider(url)
+
+        print("页面信息分析完成，开始下载")
+
+        for multiUrl in multipic_url:
+            spider.parse_multipic(multiUrl)
+
+        for downloadUrl,pageUrl in origin_url.items():
+            count += 1
+            spider.download_pic(downloadUrl, pageUrl)
+            print(f"正在下载第{count}张单图")
+
+        for page_url, multipic_urlList in really_multipic_url.items():
+            for multipicUrl in multipic_urlList:
+                multi_count += 1
+                spider.download_multipic(multipicUrl, page_url)
+                print(f"正在下载第{multi_count}张多图")
+
+
+        print(f"共下载{count}张单图，{multi_count}张多图")
+    	
+
 if __name__ == '__main__':
-    count = 0
-    multi_count = 0
-    spider = pixiv_spider()
-    if spider.check_login():
-        print("已登录")
-    else:
-        username = input("请输入帐号")
-        password = input("请输入密码")
-        spider.login_in(username, password)
-
-    spider.start_spider(begin_url, int(setMaxPage) + 1)
-
-    for next_page in next_pages_url:
-        spider.parse_json(next_page)
-
-    for url in prepare_url:
-        spider.on_spider(url)
-
-    for multiUrl in multipic_url:
-        spider.parse_multipic(multiUrl)
-
-    for downloadUrl,pageUrl in origin_url.items():
-        count += 1
-        spider.download_pic(downloadUrl, pageUrl)
-        print(f"正在下载第{count}张单图")
-
-    for page_url, multipic_urlList in really_multipic_url.items():
-        for multipicUrl in multipic_urlList:
-            multi_count += 1
-            spider.download_multipic(multipicUrl, page_url)
-            print(f"正在下载第{multi_count}张多图")
-
-
-    print(f"共下载{count}张单图，{multi_count}张多图")
+    pixiv_spider().main()
