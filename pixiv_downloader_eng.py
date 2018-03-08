@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
-# @Last Modified by:   Anthorty
-# @Last Modified time: 2018-03-01 15:33:27
+# @Last Modified by:   Alex
+# @Last Modified time: 2018-03-08 19:32:27
 # Version: 0.0.1
 
 import requests
@@ -181,9 +181,10 @@ class pixiv_spider():
         if spider.check_login():
             print("logined in")
         else:
-            username = input("Enter your username")
-            password = input("Enter your password")
+            username = input("Enter your username\n")
+            password = input("Enter your password\n")
             spider.login_in(username, password)
+            print('logined in')
 
         spider.start_spider(begin_url, int(setMaxPage) + 1)
 

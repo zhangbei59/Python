@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
-# @Last Modified by:   Anthorty
-# @Last Modified time: 2018-03-01 15:31:20
+# @Last Modified by:   Alex
+# @Last Modified time: 2018-03-08 19:31:22
 # Version: 0.0.1
 
 import requests
@@ -180,9 +180,10 @@ class pixiv_spider():
         if spider.check_login():
             print("已登录")
         else:
-            username = input("请输入帐号")
-            password = input("请输入密码")
+            username = input("请输入帐号\n")
+            password = input("请输入密码\n")
             spider.login_in(username, password)
+            print('已登录')
 
         spider.start_spider(begin_url, int(setMaxPage) + 1)
 
