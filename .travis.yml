@@ -1,5 +1,7 @@
 language: python
 
+sudo: true
+
 matrix: 
   include: 
     - python: python3.6
