@@ -5,6 +5,6 @@ matrix:
     - python: python3.6
 
 before_install:
-  - pip install requests
-  - pip install lxml
-  - pip install BeautifulSoup4
+  - pip3.6 install requests
+  - pip3.6 install lxml
+  - pip3.6 install BeautifulSoup4
