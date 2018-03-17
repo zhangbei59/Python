@@ -2,7 +2,7 @@
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
 # @Last Modified by:   Alex in Linux
-# @Last Modified time: 2018-03-17 21:57:08
+# @Last Modified time: 2018-03-17 21:59:08
 # Version: 0.0.1
 
 import requests
@@ -25,9 +25,9 @@ front_url = "https://www.pixiv.net/"
 multi_front_url = "https://www.pixiv.net"
 detail_url = "https://www.pixiv.net/member_illust.php?mode=medium&illust_id="
 
-setDate = input("Enter date，format is YYYYMMDD，such as 20180101，last day is yesterday\n")
-setList = input("Enter list you want to crawling，0.daily 1.weekly 2.monthly 3.male\n")
-setMaxPage = input("Enter page，max page is 10\n")
+setDate = input("请输入爬取日期，格式为YYYYMMDD，如20180101，最新日期为昨天\n")
+setList = input("设置爬取榜单，0.日榜 1.周榜 2.月榜 3.男性喜爱\n")
+setMaxPage = input("设置爬取页数，最大不超过10页\n")
 
 rankList = ["daily", "weekly", "monthly", "male"] 
 referInfo = ["day", "week", "month", "male"]
@@ -43,7 +43,6 @@ next_pages_url = []
 origin_url = {}
 really_multipic_url = {}
 
-
 class pixiv_spider():
     def __init__(self):
         self.session = requests.session()
@@ -52,9 +51,9 @@ class pixiv_spider():
         self.session.cookies = http.cookiejar.LWPCookieJar(filename = "pixiv_cookies")
         try:
             self.session.cookies.load(filename = "pixiv_cookies", ignore_discard = True)
-            print("load cookies successfully")
+            print("成功读取cookies")
         except Exception as e:
-            print("can't load cookies")
+            print("找不到cookies文件，无法加载")
 
         self.params = {
             "lang":"zh",
@@ -173,18 +172,18 @@ class pixiv_spider():
                 f.write(download_pic.content)
         except Exception as e:
             print("Download Error!", e)
-            
+
     def main(self, multi = False):
         count = 0
         multi_count = 0
         spider = pixiv_spider()
         if spider.check_login():
-            print("logged in")
+            print("已登录")
         else:
-            username = input("Enter your username\n")
-            password = input("Enter your password\n")
+            username = input("请输入帐号\n")
+            password = input("请输入密码\n")
             spider.login_in(username, password)
-            print('logged in')
+            print('已登录')
 
         spider.start_spider(begin_url, int(setMaxPage) + 1)
 
@@ -194,24 +193,26 @@ class pixiv_spider():
         for url in prepare_url:
             spider.on_spider(url)
 
+        print("页面信息分析完成，开始下载")
+
         for multiUrl in multipic_url:
             spider.parse_multipic(multiUrl)
 
         for downloadUrl,pageUrl in origin_url.items():
             count += 1
             spider.download_pic(downloadUrl, pageUrl)
-            print(f"downloading {count} pictures")
+            print(f"正在下载第{count}张单图")
 
         if multi == True:
-	        for page_url, multipic_urlList in really_multipic_url.items():
-	            for multipicUrl in multipic_urlList:
-	                multi_count += 1
-	                spider.download_multipic(multipicUrl, page_url)
-	                print(f"downloading {multi_count} manga")
+            for page_url, multipic_urlList in really_multipic_url.items():
+                for multipicUrl in multipic_urlList:
+                    multi_count += 1
+                    spider.download_multipic(multipicUrl, page_url)
+                    print(f"正在下载第{multi_count}张多图")
 
 
-        print(f"downloaded {count} pictures，{multi_count} manga")
-
+        print(f"共下载{count}张单图，{multi_count}张多图")
+    	
 
 if __name__ == '__main__':
     pixiv_spider().main()
