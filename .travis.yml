@@ -1,0 +1,10 @@
+language: python
+
+matrix: 
+  include: 
+    - python: python3.6
+
+before_install:
+  - pip install requests
+  - pip install lxml
+  - pip install BeautifulSoup4
