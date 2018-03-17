@@ -1,12 +1,8 @@
 language: python
+python:
+  - "3.6"
 
-sudo: true
-
-matrix: 
-  include: 
-    - python: python3.6
-
-before_install:
+install:
   - pip3.6 install requests
   - pip3.6 install lxml
   - pip3.6 install BeautifulSoup4
