@@ -1,8 +1,0 @@
-language: python
-python:
-  - "3.6.1"
-
-install:
-  - pip3.6 install requests
-  - pip3.6 install lxml
-  - pip3.6 install BeautifulSoup4
