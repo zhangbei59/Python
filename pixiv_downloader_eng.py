@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
-# @Last Modified by:   Alex in Linux
-# @Last Modified time: 2018-03-17 21:57:08
-# Version: 0.0.1
+# @Last Modified by:   Alex
+# @Last Modified time: 2018-04-10 22:46:28
 
 import requests
 import re
@@ -26,8 +25,8 @@ multi_front_url = "https://www.pixiv.net"
 detail_url = "https://www.pixiv.net/member_illust.php?mode=medium&illust_id="
 
 setDate = input("Enter date，format is YYYYMMDD，such as 20180101，last day is yesterday\n")
-setList = input("Enter list you want to crawling，0.daily 1.weekly 2.monthly 3.male\n")
-setMaxPage = input("Enter page，max page is 10\n")
+setList = input("Enter list you want to crawl，0.daily \t1.weekly \t2.monthly \t3.male\n")
+setMaxPage = input("Enter crawl page，max page is 10\n")
 
 rankList = ["daily", "weekly", "monthly", "male"] 
 referInfo = ["day", "week", "month", "male"]
@@ -52,9 +51,9 @@ class pixiv_spider():
         self.session.cookies = http.cookiejar.LWPCookieJar(filename = "pixiv_cookies")
         try:
             self.session.cookies.load(filename = "pixiv_cookies", ignore_discard = True)
-            print("load cookies successfully")
+            print("Load cookies successfully")
         except Exception as e:
-            print("can't load cookies")
+            print("Can't load cookies")
 
         self.params = {
             "lang":"zh",
