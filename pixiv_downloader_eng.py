@@ -2,7 +2,7 @@
 # @Author: Alex
 # @Date:   2018-01-20 22:18:08
 # @Last Modified by:   Alex
-# @Last Modified time: 2018-04-10 22:46:28
+# @Last Modified time: 2018-04-10 22:50:01
 
 import requests
 import re
@@ -24,9 +24,9 @@ front_url = "https://www.pixiv.net/"
 multi_front_url = "https://www.pixiv.net"
 detail_url = "https://www.pixiv.net/member_illust.php?mode=medium&illust_id="
 
-setDate = input("Enter date，format is YYYYMMDD，such as 20180101，last day is yesterday\n")
-setList = input("Enter list you want to crawl，0.daily \t1.weekly \t2.monthly \t3.male\n")
-setMaxPage = input("Enter crawl page，max page is 10\n")
+setDate = input("Enter date,format is YYYYMMDD,such as 20180101,last day is yesterday\n")
+setList = input("Enter list you want to crawl:0.daily  1.weekly  2.monthly  3.male\n")
+setMaxPage = input("Enter crawl page,max page is 10\n")
 
 rankList = ["daily", "weekly", "monthly", "male"] 
 referInfo = ["day", "week", "month", "male"]
@@ -209,7 +209,7 @@ class pixiv_spider():
 	                print(f"downloading {multi_count} manga")
 
 
-        print(f"downloaded {count} pictures，{multi_count} manga")
+        print(f"downloaded {count} pictures,{multi_count} manga")
 
 
 if __name__ == '__main__':
