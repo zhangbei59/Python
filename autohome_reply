@@ -1,0 +1,80 @@
+# -*- coding:utf-8 -*-
+
+import requests
+import time
+import random
+
+def exec_relpy(reply_no):
+    cookies ={
+        'fvlid': '1521096771116DFqil6p7Ii',
+        'sessionid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+        'sessionuid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+        'pcpopclub': 'BF3694604199E99F50EBBA816053625DB48147639DA79D0AE0CC269A9E9065F87DC9BAEB3DF5140B8AC83463FCE409B97CAACC61F4FE61428D311EFACBA645B3F7E1BCE60A171857F34F7098FC548B0EE1135B627AC8F98F16AE315585D5BC5F6088B03DC90F9BF42779721F60966B8927A83401500F37A94E97CD4485B52C60E86C37D79B53657D714BF7C409596C1EE787835058C9CEEE8E67EC198578A65B9E1D1E174B484F5189D6610AC85891BA09B0355B121184505F9279F336F5DB92F193C9101C6037EBABAA008612A655F3D81AB6A4BF8081E82358D63EBF2E3AA401292F7505FD714141EA078CA8B85B7D767EA131958277AF68CC0076C1447359BDC3C6B31FAB39FA10A4AD9063C0C27FDCCFC469FFE08BE31AAF2236686199F040C9BA1C4E9F65EA51661DE8',
+        'autouserid': '30711349',
+        'clubUserShow': '30711349|4133|12|Bekey123|0|0|0|//i2.autoimg.cn/userscenter/g25/M00/1D/42/120X120_0_q87_autohomecar__wKgHIlq4ZPmAEdh6AAA1qm7elF0049.jpg|3/26/2018 11:11:53 AM|0',
+        'UM_distinctid': '16260c8782a4bd-0be69766d591dd-3a614f0b-100200-16260c8782b294',
+        'area': '410199',
+        'historybbsName4': 'c-4133%7C%E8%BF%9C%E6%99%AFSUV%2Cc-2733%7C%E5%A5%A5%E8%BF%AARS',
+        '__ah_uuid': '03D7C6E6-05ED-43D9-A08A-EC665FCEECBE',
+        'ahsids': '4133',
+        '__utma': '1.2108737062.1521096816.1521182928.1525326879.3',
+        '__utmz': '1.1525326879.3.3.utmcsr=i.autohome.com.cn|utmccn=(referral)|utmcmd=referral|utmcct=/30711349/photo',
+        'CNZZDATA1262640694': '1437677701-1522040168-%7C1525831704',
+        'sessionuserid': '30711349',
+        'sessionlogin': 'c39c2a85a57b418bb1fee58f908a0bf601d49e35',
+        'sessionip': '218.28.220.182',
+        'ahpau': '1',
+        'pvidlist': '5605cd1d-6606-4bd0-a63e-10a9909ab5af0:182476:268850:0:1:1020501',
+        'autoac': '28CE64C8226872CAE6694EB062844AD9',
+        'autotc': '1CC8E76ECD571D06656203348CDB74A1',
+        'isFromBD': '',
+        'sessionvid': 'A99BFD25-236A-4FC2-A385-EFBC1D2A3F36',
+        'isFromBaiDuSearch': '',
+        'isFromQQSearch': '',
+        'pvidchain': '3311668,100139,101759',
+        'ahpvno': '13',
+        'ref': 'www.baidu.com%7C0%7C0%7Cunitradeprod.alipay.com%7C2018-05-17+09%3A28%3A19.432%7C2018-04-26+11%3A19%3A46.187',
+        'ahrlid': '1526520513969yeSimCPR-1526520690607',
+    }
+
+    headers = {
+        'Origin': 'https://club.autohome.com.cn',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': '*/*',
+        'Referer': 'https://club.autohome.com.cn/bbs/thread/07612753c3689a0a/73305094-5.html',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Connection': 'keep-alive',
+    }
+    reply_list = ['老铁666',
+                  '郑州远景suv车友会505报到',
+                  '老铁帖子写的不错啊',
+                  '三连击第一波',
+                  '三连击第二波',
+                  '三连击第三波',
+                  '支持支持欢迎回访',
+                  '帖子不赖，加油',
+                  '郑景会505前来报到，支持老铁',
+                  '车标505比克魔王来了，不错不错']
+    i = 0
+    for k in range(i,reply_no-1):
+        data = [
+        ('bbs', 'c'),
+        ('bbsid', '4133'),
+        ('topicId', '73305094'),
+        ('content', reply_list[k]),
+        ('uniquepageid', 'mF1cVAbeo7SRga74g5sgP2yT9ODUy2FpCVMBmDDaTGw='),
+        ('domain', 'autohome.com.cn'),
+        ]
+        return data
+
+        response = requests.post('https://club.autohome.com.cn/Detail/AddReply', headers=headers, cookies=cookies, data=data)
+        print(response.text)
+        time.sleep(5)
+        global i
+        i += 1
+
+if __name__ == '__main__':
+    exec_relpy(1)
