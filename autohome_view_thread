@@ -1,0 +1,136 @@
+# -*- coding: utf-8 -*-
+#多线程版本，通过定义浏览网址，单线程次数，及执行线程数快速达到刷帖目的
+#购买完整代码联系402151718
+
+import requests
+import threading
+import re
+import json
+import time
+
+#解析jsonp数据函数
+def parse_jsonp(jsonp_str):
+    try:
+        return re.search('^[^(]*?\((.*)\)[^)]*$', jsonp_str).group(1)
+    except:
+        raise ValueError('不可用jsonp数据,联系Bekey解决下吧')
+#从帖子定制中解析TOPID函数
+def parse_topid(url):
+    try:
+        return re.search(r'https://.*\/(\d+)-1.html', url).group(1)
+    except:
+        raise  ValueError('不可用的网址')
+
+url = input('请输入你的帖子网址:')
+while url == '':
+    print('帖子地址未输入，请重新输入!!!')
+    url = input('请输入你的帖子网址:')
+
+
+view_no = input('请输入单线程执行次数:')
+while view_no == '':
+    print('单线程浏览次数未输入，请重新输入!!!')
+    view_no = input('请输入单线程执行次数:')
+
+
+thread_no = input('请输入线程数量:')
+while thread_no == '':
+    print('线程数量未定义，请重新输入!!!')
+    thread_no = input('请输入线程数量:')
+
+view_no = int(view_no)
+thread_no = int(thread_no)
+
+#解析topid
+topid = parse_topid(url)
+
+#定义访问函数所需要的requests参数
+cookies = {
+    'fvlid': '1521096771116DFqil6p7Ii',
+    'sessionid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+    'sessionuid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+    'UM_distinctid': '16260c8782a4bd-0be69766d591dd-3a614f0b-100200-16260c8782b294',
+    'historybbsName4': 'c-4133%7C%E8%BF%9C%E6%99%AFSUV%2Cc-2733%7C%E5%A5%A5%E8%BF%AARS',
+    '__ah_uuid': '03D7C6E6-05ED-43D9-A08A-EC665FCEECBE',
+    'ahpau': '1',
+    'ahsids': '2123_4133',
+    'OUTFOX_SEARCH_USER_ID_NCOO': '194274344.09123465',
+    'area': '410199',
+    '__utma': '1.2108737062.1521096816.1526621335.1526979015.5',
+    '__utmz': '1.1526979015.5.5.utmcsr=i.autohome.com.cn|utmccn=(referral)|utmcmd=referral|utmcct=/30711349/photo',
+    'sessionvid': 'C3EE6191-2421-40F2-AD16-376BCE29E2E4',
+    'sessionip': '123.123.111.123',
+    'autoac': 'ECE1A6EF930A79F340473935D053F1AC',
+    'autotc': '1D6F2DDB0086E0081B973979BCD60227',
+    'ref': 'www.baidu.com%7C0%7C0%7Cunitradeprod.alipay.com%7C2018-05-24+14%3A34%3A22.690%7C2018-04-26+11%3A19%3A46.187',
+    'ahpvno': '289',
+}
+
+headers = {
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'zh-CN,zh;q=0.9',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+    'Accept': '*/*',
+    'Referer': url,
+    'Connection': 'keep-alive',
+}
+
+params = (
+    ('callback', 'jsonpCallback'),
+    ('topicId', topid),
+    ('UID', '-1'),
+    ('roleId', '-1'),
+    ('bbs', 'c'),
+    ('bbsid', '4133'),
+    ('pageIndex', '1'),
+    ('isOwner', 'false'),
+    ('memberIds', '30711349,19122168,5743123,64612165,28549909,58890786,67312684,39501890,61902933'),
+    ('recom', '9'),
+    ('_', '1527143692693'),
+)
+
+#定义单线程访问函数
+def ipviews(view_no):
+    for i in range(0,view_no):
+        try:
+            response = requests.get('请求地址', headers=headers,
+                                    params=params, cookies=cookies)
+            jsondata = parse_jsonp(response.text)
+            print('当前阅读量' + str(json.loads(jsondata)['topicClicks']['Views']) + '当前回复量' + str(
+                json.loads(jsondata)['topicClicks']['Replys']))
+        except Exception as e:
+            print(e)
+
+
+#定义线程创建函数
+def main(num):
+    global  mutex
+    #创建线程锁
+    mutex = threading.Lock()
+
+    #定义线程池
+    threads = []
+    #先创建线程对象
+    for x in range(0,num):
+        threads.append(threading.Thread(target=ipviews,args=(view_no,)))
+    #启动所有线程
+    for t in threads:
+        print('启动线程'+str(t))
+        t.start()
+    print('==============================================================')
+    print('线程创建完毕，马上开始刷帖，预计每秒' + str(5 * thread_no) + '次请求')
+    print('==============================================================')
+    time.sleep(3)
+    #主线程中等待所有子线程退出
+    for t in threads:
+        t.join()
+
+#定义总执行函数
+if __name__ == "__main__":
+    start = time.clock()
+    main(thread_no)
+    end = time.clock()
+    print('==============================================================')
+    print('刷帖结束，本次共完成'+str(view_no*thread_no)+'次请求,10秒后关闭此窗口\n本次任务总耗时'+str(end-start)+'秒')
+    print('==============================================================')
+    time.sleep(10)
