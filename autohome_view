@@ -1,0 +1,106 @@
+# -*- coding: utf-8 -*-
+#单线程版本，无法定义线程，只能通过多开窗口达到多线程效果
+
+import requests
+import threading
+import re
+import json
+import time
+
+#解析jsonp数据
+def parse_jsonp(jsonp_str):
+    try:
+        return re.search('^[^(]*?\((.*)\)[^)]*$', jsonp_str).group(1)
+    except:
+        raise ValueError('不可用jsonp数据,联系Bekey解决下吧')
+#从帖子定制中解析TOPID
+def parse_topid(url):
+    try:
+        return re.search(r'https://.*\/(\d+)-1.html', url).group(1)
+    except:
+        raise  ValueError('不可用的网址')
+
+
+url = input('请输入你的帖子网址:')
+while url == '':
+    print('帖子地址未输入，请重新输入')
+    url = input('请输入你的帖子网址:')
+
+
+view_no = input('请输入你要访问帖子地址的次数:')
+while view_no == '':
+    print('浏览次数未输入，请重新输入')
+    view_no = input('请输入你要访问帖子地址的次数:')
+
+#获取topid
+topid = parse_topid(url)
+
+#浏览函数
+def ipviews():
+    cookies = {
+        'fvlid': '1521096771116DFqil6p7Ii',
+        'sessionid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+        'sessionuid': '570A1D5B-8411-43ED-984E-CD067BEDFCFE%7C%7C2018-03-15+14%3A52%3A44.203%7C%7Cwww.baidu.com',
+        'UM_distinctid': '16260c8782a4bd-0be69766d591dd-3a614f0b-100200-16260c8782b294',
+        'historybbsName4': 'c-4133%7C%E8%BF%9C%E6%99%AFSUV%2Cc-2733%7C%E5%A5%A5%E8%BF%AARS',
+        '__ah_uuid': '03D7C6E6-05ED-43D9-A08A-EC665FCEECBE',
+        'ahpau': '1',
+        'ahsids': '2123_4133',
+        'OUTFOX_SEARCH_USER_ID_NCOO': '194274344.09123465',
+        'area': '410199',
+        '__utma': '1.2108737062.1521096816.1526621335.1526979015.5',
+        '__utmz': '1.1526979015.5.5.utmcsr=i.autohome.com.cn|utmccn=(referral)|utmcmd=referral|utmcct=/30711349/photo',
+        'sessionvid': 'C3EE6191-2421-40F2-AD16-376BCE29E2E4',
+        'sessionip': '123.123.111.123',
+        'autoac': 'ECE1A6EF930A79F340473935D053F1AC',
+        'autotc': '1D6F2DDB0086E0081B973979BCD60227',
+        'ref': 'www.baidu.com%7C0%7C0%7Cunitradeprod.alipay.com%7C2018-05-24+14%3A34%3A22.690%7C2018-04-26+11%3A19%3A46.187',
+        'ahpvno': '289',
+    }
+
+    headers = {
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+        'Accept': '*/*',
+        'Referer': url,
+        'Connection': 'keep-alive',
+    }
+
+    params = (
+        ('callback', 'jsonpCallback'),
+        ('topicId', parse_topid(url)),
+        ('UID', '-1'),
+        ('roleId', '-1'),
+        ('bbs', 'c'),
+        ('bbsid', '4133'),
+        ('pageIndex', '1'),
+        ('isOwner', 'false'),
+        ('memberIds', '30711349,19122168,5743123,64612165,28549909,58890786,67312684,39501890,61902933'),
+        ('recom', '9'),
+        ('_', '1527143692693'),
+    )
+
+    try:
+        response = requests.get('请求地址', headers=headers, params=params,cookies=cookies)
+        jsondata = parse_jsonp(response.text)
+        print('当前阅读量'+str(json.loads(jsondata)['topicClicks']['Views'])+'当前回复量'+str(json.loads(jsondata)['topicClicks']['Replys']))
+    except Exception as e:
+        print(e)
+
+
+
+
+if __name__ == "__main__":
+    print('=====================================================')
+    print('小哥哥，小姐姐，马上开始执行任务，你可以休息一会了，将会对帖子'+url+'发起'+str(view_no)+'次轰炸')
+    print('=====================================================')
+    time.sleep(1)
+    for t in range(1,int(view_no)):
+        print('第'+str(t)+'次访问')
+        ipviews()
+        t += 1
+    print('=====================================================================')
+    print('操作已执行完毕，本次执行访问'+str(view_no)+'次请求,3秒后自动关闭窗口')
+    print('=====================================================================')
+    time.sleep(3)
